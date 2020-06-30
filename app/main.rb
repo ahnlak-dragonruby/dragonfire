@@ -13,6 +13,8 @@ $gtk.require 'app/AhnSprite.rb'
 $gtk.require 'app/interfaces.rb'
 
 # And lastly, our classes
+$gtk.require 'app/Ship.rb'
+$gtk.require 'app/Player.rb'
 $gtk.require 'app/GameWorld.rb'
 
 
