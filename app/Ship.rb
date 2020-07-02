@@ -34,3 +34,5 @@ class Ship
     end
 
 end
+
+# End of Ship.rb

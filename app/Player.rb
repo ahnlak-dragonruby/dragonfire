@@ -69,6 +69,22 @@ class Player < Ship
         end
 
     end
+
+
+    # Fire, spawns all the bullets required for the current weapon
+    def fire 
+
+        # Could end up spawning a number of bullets, depending on the weapon
+        bullets = []
+
+        # For now, we'll just spawn a small green laser bolt!
+        bullets << Laser.new( :small_green_laser, @x + 105, @y + 46, true )
+
+
+        # And just hand back that collection of bullets
+        bullets
+
+    end
     
 
     # We know how to draw ourselves
@@ -92,8 +108,9 @@ class Player < Ship
 
         # We can simply render the sprite then
         args.outputs.primitives << @sprite
-        puts @sprite
 
     end
 
 end
+
+# End of Player.rb

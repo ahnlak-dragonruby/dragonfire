@@ -38,6 +38,7 @@ class GameWorld < WorldInterface
         # Set up the world; leave the player empty, update will spawn him/her
         @player = nil
         @lives = 3
+        @player_bullets = []
 
     end
 
@@ -67,6 +68,7 @@ class GameWorld < WorldInterface
         end
         @backdropr_spr.source_x = @backdropl_spr.source_x
 
+
         # Check to see if the player needs creating
         if @player.nil? && @lives.positive?
             @player = Player.new args
@@ -88,8 +90,22 @@ class GameWorld < WorldInterface
         if args.inputs.keyboard.key_held.left || args.inputs.keyboard.key_held.a || args.inputs.controller_one.key_held.left
             horizontal = -1
         end
-
         @player.move horizontal, vertical
+
+
+        # If the player is firing, fire the current weapon they have
+        if @player_bullets.empty? && ( args.inputs.keyboard.key_held.space || args.inputs.controller_one.key_held.a )
+            @player_bullets.concat( @player.fire )
+        end
+
+
+        # Update the position of any player bullets
+        @player_bullets.each { |bullet| bullet.update args }
+
+
+        # And purge any bullets now out of scope
+        @player_bullets.delete_if { |bullet| bullet.outofbounds? args.grid }
+
 
         # Everything is fine, stick with this world!
         true
@@ -106,6 +122,9 @@ class GameWorld < WorldInterface
 
         # Draw the player; the object knows best how to do that...
         @player.render args
+
+        # Also, draw player bullets
+        @player_bullets.each { |bullet| bullet.render args }
 
     end
 
