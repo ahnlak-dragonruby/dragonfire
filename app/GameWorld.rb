@@ -16,7 +16,8 @@ class GameWorld < WorldInterface
 
     # A big array of enemy hashes, which define the appearance, type and path of enemies
     @@enemies = [
-        { spawn: 60, type: :enemy_saucer, path: [[1200, 300], [600, 300], [600, 600]] }
+        { spawn: 60, type: :enemy_saucer, path: [[1300, 300], [600, 300], [900, 620], [800, 100], [1300, 300]] },
+        { spawn: 180, type: :enemy_saucer, path: [[1300, 300], [600, 300], [900, 620], [800, 100], [1300, 300]] }
     ]
 
 

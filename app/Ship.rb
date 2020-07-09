@@ -35,12 +35,23 @@ class Ship
         # If it's on a horizontal then it's easy
         if @dest_y == @y
             move_x @speed * ( @dest_x > @x ? 1 : -1 )
+            return
         end
 
         # The same if it's on a vertical
         if @dest_x == @x
             move_y @speed * ( @dest_y > @y ? 1 : -1 )
+            return
         end
+
+        # Sadly, this means we have to do trigonometry. Urgh.
+        dx = @x.to_f - @dest_x
+        dy = @y.to_f - @dest_y
+        angle = Math::PI + ( Math.atan2( dx, dy ) )
+
+        # So, work out the x and y components of this move
+        move_x Math.sin( angle ) * @speed
+        move_y Math.cos( angle ) * @speed
         
     end
 
