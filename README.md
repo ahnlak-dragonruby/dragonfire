@@ -10,3 +10,5 @@ could do regarding bullets and fast-paced action proved too tempting.
 
 The source code to DragonFire is released under the MIT License. To build it, you will also
 need a licensed copy of [DragonRuby](https:/dragonruby.org) - please support this awesome engine!
+
+All assets are CC0 licensed from [Kenney] Game Assets (https://kenney.itch.io/)

@@ -20,6 +20,7 @@ class Ship
         @dest_x = nil
         @dest_y = nil
         @rotation = 0
+        @spinning = false
 
     end
 
@@ -30,7 +31,54 @@ class Ship
         if @dest_x.nil? || @dest_y.nil?
             return
         end
+
+        # If it's on a horizontal then it's easy
+        if @dest_y == @y
+            move_x @speed * ( @dest_x > @x ? 1 : -1 )
+        end
+
+        # The same if it's on a vertical
+        if @dest_x == @x
+            move_y @speed * ( @dest_y > @y ? 1 : -1 )
+        end
         
+    end
+
+    # Move toward a target, but don't go past it
+    def move_x amount
+
+        # Do the full movement.
+        @x += amount
+
+        # Check that we didn't go past the destination
+        if amount.positive?
+            if @x > @dest_x
+                @x = @dest_x
+            end
+        else
+            if @x < @dest_x
+                @x = @dest_x
+            end
+        end
+
+    end
+
+    def move_y amount
+
+        # Do the full movement.
+        @y += amount
+
+        # Check that we didn't go past the destination
+        if amount.positive?
+            if @y > @dest_y
+                @y = @dest_y
+            end
+        else
+            if @y < @dest_y
+                @y = @dest_y
+            end
+        end
+
     end
 
 end

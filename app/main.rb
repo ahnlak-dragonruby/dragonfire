@@ -16,6 +16,7 @@ $gtk.require 'app/interfaces.rb'
 $gtk.require 'app/Ship.rb'
 $gtk.require 'app/Laser.rb'
 $gtk.require 'app/Player.rb'
+$gtk.require 'app/Enemy.rb'
 $gtk.require 'app/GameWorld.rb'
 
 
@@ -36,7 +37,7 @@ def spawn_mode args
     # so they can all be treated largely the same
     case args.state.world_type
     when :game
-        args.state.world = GameWorld.new args.grid
+        args.state.world = GameWorld.new args
     end
 
 end

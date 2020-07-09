@@ -14,22 +14,28 @@ class GameWorld < WorldInterface
     BACKDROP_HEIGHT = 256
 
 
+    # A big array of enemy hashes, which define the appearance, type and path of enemies
+    @@enemies = [
+        { spawn: 60, type: :enemy_saucer, path: [[1200, 300], [600, 300], [600, 600]] }
+    ]
+
+
     # Initialiser; set up the static aspects of the world the player will travel in
-    def initialize grid
+    def initialize args
 
         # Build the scrolling backdrop - for now, the backdrop is split in half because of Reasons.
-        divide = grid.center_x.div( BACKDROP_WIDTH ) * BACKDROP_WIDTH
-        @backdropl_spr = AhnSprite.new "backdrop", divide, grid.h
-        0.step( grid.h, BACKDROP_HEIGHT ).each do |row|
+        divide = args.grid.center_x.div( BACKDROP_WIDTH ) * BACKDROP_WIDTH
+        @backdropl_spr = AhnSprite.new "backdrop", divide, args.grid.h
+        0.step( args.grid.h, BACKDROP_HEIGHT ).each do |row|
             0.step( ( divide ) + BACKDROP_WIDTH, BACKDROP_WIDTH ).each do |col|
                 @backdropl_spr.sprites << { x: col, y: row, w: BACKDROP_WIDTH, h: BACKDROP_HEIGHT, path: "sprites/backdrop.png" }
             end
         end
         @backdropl_spr.x = 0
 
-        @backdropr_spr = AhnSprite.new "backdrop", grid.w - divide, grid.h
-        0.step( grid.h, BACKDROP_HEIGHT ).each do |row|
-            0.step( ( grid.w - divide ) + BACKDROP_WIDTH, BACKDROP_WIDTH ).each do |col|
+        @backdropr_spr = AhnSprite.new "backdrop", args.grid.w - divide, args.grid.h
+        0.step( args.grid.h, BACKDROP_HEIGHT ).each do |row|
+            0.step( ( args.grid.w - divide ) + BACKDROP_WIDTH, BACKDROP_WIDTH ).each do |col|
                 @backdropr_spr.sprites << { x: col, y: row, w: BACKDROP_WIDTH, h: BACKDROP_HEIGHT, path: "sprites/backdrop.png" }
             end
         end
@@ -39,6 +45,12 @@ class GameWorld < WorldInterface
         @player = nil
         @lives = 3
         @player_bullets = []
+
+        # Remember the epoch we started at, to trigger enemies at the right time
+        @epoch = args.state.tick_count
+        @enemy_idx = 0
+        @enemy = []
+        @enemy_bullets = []
 
     end
 
@@ -75,6 +87,13 @@ class GameWorld < WorldInterface
         end
 
 
+        # Also, spawn any enemies that are due
+        while ( @enemy_idx < @@enemies.length ) && ( args.state.tick_count >= ( @epoch + @@enemies[@enemy_idx][:spawn] ) ) do
+            @enemy << Enemy.new( @@enemies[@enemy_idx] )
+            @enemy_idx += 1
+        end
+
+
         # User input; see if we're moving first off
         horizontal = 0
         vertical = 0
@@ -103,8 +122,20 @@ class GameWorld < WorldInterface
         @player_bullets.each { |bullet| bullet.update args }
 
 
+        # Allow each enemy to move
+        @enemy.each { |ship| ship.move }
+
+
+        # Decide if any enemies get to shoot
+
+
+        # And update all of their bullets, too
+        @enemy_bullets.each { |bullet| bullet.update args }
+
+
         # And purge any bullets now out of scope
         @player_bullets.delete_if { |bullet| bullet.outofbounds? args.grid }
+        @enemy_bullets.delete_if { |bullet| bullet.outofbounds? args.grid }
 
 
         # Everything is fine, stick with this world!
@@ -125,6 +156,10 @@ class GameWorld < WorldInterface
 
         # Also, draw player bullets
         @player_bullets.each { |bullet| bullet.render args }
+
+        # The same applies to enemies
+        @enemy.each { |ship| ship.render args }
+        @enemy_bullets.each { |buller| bullet.render args }
 
     end
 

@@ -13,9 +13,19 @@ class Laser < BulletInterface
 
         # The type of laser really only affects the graphics and the damage
         case type
-        when :small_green_laser
-            @spritea_src = "sprites/laserGreen12.png"
-            @spriteb_src = "sprites/laserGreen13.png"
+        when :laser_small_green
+            @spritea_src = "sprites/laser_green_1.png"
+            @spriteb_src = "sprites/laser_green_2.png"
+            @size = 37
+            @widtha = 13
+            @heighta = 37
+            @widthb = 9
+            @heightb = 37
+            @damage = 1
+            @speed = 10 * ( ltr == true ? 1 : -1 )
+        when :laser_small_red
+            @spritea_src = "sprites/laser_red_1.png"
+            @spriteb_src = "sprites/laser_red_2.png"
             @size = 37
             @widtha = 13
             @heighta = 37

@@ -78,7 +78,7 @@ class Player < Ship
         bullets = []
 
         # For now, we'll just spawn a small green laser bolt!
-        bullets << Laser.new( :small_green_laser, @x + 105, @y + 46, true )
+        bullets << Laser.new( :laser_small_red, @x + 105, @y + 46, true )
 
 
         # And just hand back that collection of bullets
