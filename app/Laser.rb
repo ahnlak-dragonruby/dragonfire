@@ -97,10 +97,12 @@ class Laser < BulletInterface
         # Lasers alternate between two frames, just to look a bit dynamic
         if args.state.tick_count.even?
             args.outputs.primitives << @spritea
+            @spritea.render_bounds args.outputs
         else
             args.outputs.primitives << @spriteb
+            @spriteb.render_bounds args.outputs
         end
-
+        
     end
 
 

@@ -108,6 +108,7 @@ class Player < Ship
 
         # We can simply render the sprite then
         args.outputs.primitives << @sprite
+        @sprite.render_bounds args.outputs
 
     end
 
