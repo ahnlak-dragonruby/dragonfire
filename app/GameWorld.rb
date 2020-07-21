@@ -138,6 +138,19 @@ class GameWorld < WorldInterface
         @player_bullets.delete_if { |bullet| bullet.outofbounds? args.grid }
         @enemy_bullets.delete_if { |bullet| bullet.outofbounds? args.grid }
 
+        
+        # Check to see if any player bullets collided with any enemies
+        @player_bullets.each do | bullet |
+
+            # Check against each enemy
+            @enemy.each do | ship |
+                if bullet.collides? ship
+                    args.outputs.debug << [ 100, 100, "HIT!", 5, 1, 255, 0, 0 ].label
+                end
+            end
+            
+        end
+
 
         # Everything is fine, stick with this world!
         true

@@ -125,6 +125,20 @@ class AhnPrimitive
         new_y3 = Math.sin(angle) * (p_args[:x3] - p_anchor_x) + Math.cos(angle) * (p_args[:y3] - p_anchor_y) + p_anchor_y;
         new_y4 = Math.sin(angle) * (p_args[:x4] - p_anchor_x) + Math.cos(angle) * (p_args[:y4] - p_anchor_y) + p_anchor_y;
 
+        # Normalise the point sequence so we're always bottom left point first
+        while new_x1 > new_x2 || new_x1 > new_x3 || new_x1 > new_x4 || ( new_x1 == new_x2 && new_y1 > new_y2 )
+            tmp_x = new_x1
+            tmp_y = new_y1
+            new_x1 = new_x2
+            new_y1 = new_y2
+            new_x2 = new_x3
+            new_y2 = new_y3
+            new_x3 = new_x4
+            new_y3 = new_y4
+            new_x4 = tmp_x
+            new_y4 = tmp_y
+        end
+
         # Simply return the newly generated hash
         { x1: new_x1, x2: new_x2, x3: new_x3, x4: new_x4, y1: new_y1, y2: new_y2, y3: new_y3, y4: new_y4 }
 
@@ -212,13 +226,51 @@ class AhnSprite
 
     end
 
+    # Draw the boundaries, only for debug purposes so shouldn't be rendered in production
     def render_bounds outputs
         boundaries.each do | box |
-            outputs.lines << { x: box[:x1], y: box[:y1], x2: box[:x2], y2: box[:y2], r: 255, g: 0, b: 0 }
-            outputs.lines << { x: box[:x2], y: box[:y2], x2: box[:x3], y2: box[:y3], r: 255, g: 0, b: 0 }
-            outputs.lines << { x: box[:x3], y: box[:y3], x2: box[:x4], y2: box[:y4], r: 255, g: 0, b: 0 }
-            outputs.lines << { x: box[:x4], y: box[:y4], x2: box[:x1], y2: box[:y1], r: 255, g: 0, b: 0 }
+            outputs.debug << { x: box[:x1], y: box[:y1], w: 10, h: 10, r: 255, g: 0, b: 0 }.solid
+            outputs.debug << { x: box[:x1], y: box[:y1], x2: box[:x2], y2: box[:y2], r: 255, g: 0, b: 0 }.line
+            outputs.debug << { x: box[:x2], y: box[:y2], x2: box[:x3], y2: box[:y3], r: 255, g: 0, b: 0 }.line
+            outputs.debug << { x: box[:x3], y: box[:y3], x2: box[:x4], y2: box[:y4], r: 255, g: 0, b: 0 }.line
+            outputs.debug << { x: box[:x4], y: box[:y4], x2: box[:x1], y2: box[:y1], r: 255, g: 0, b: 0 }.line
         end
+    end
+
+
+    # Checks to see if we collide with another AhnSprite object
+    def collides? target
+
+        # Check that this is another AhnSprite, or none of this will make any sense
+        if !target.kind_of? AhnSprite
+            return false
+        end
+
+        # Fetch their boundaries
+        their_borders = target.boundaries
+
+        # Work through our own, comparing against each border in turn
+        boundaries.each do | our_border |
+
+            # Go through each target border
+            their_borders.each do | their_border |
+
+                # If both borders are unrotated, it's a simple check
+                if our_border[:y1] == our_border[:y2] && their_border[:y1] == their_border[:y2]
+                    if our_border[:x1] < their_border[:x2] && our_border[:x2] > their_border[:x1] && our_border[:y3] > their_border[:y1] && our_border[:y1] < their_border[:y3] 
+                       return true
+                    end
+                end
+
+                # Then we have do a much more complicated test
+
+            end
+
+        end
+
+        # If we haven't returned with a hit, then there is no collision
+        false
+
     end
         
 

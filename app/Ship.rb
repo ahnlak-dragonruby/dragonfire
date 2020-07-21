@@ -9,6 +9,8 @@
 
 class Ship
 
+    attr_reader :sprite
+
     # Constructor; sets the internals to some sensible defaults
     def initialize x=nil, y=nil,speed=nil, turnspeed=nil
         

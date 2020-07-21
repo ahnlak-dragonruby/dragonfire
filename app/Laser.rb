@@ -62,6 +62,12 @@ class Laser < BulletInterface
     end
 
 
+    # Pass on collision detection
+    def collides? target
+        @spritea.collides?( target.sprite ) || @spriteb.collides?( target.sprite )
+    end
+
+
     # Update our location, based on speed. Nice and simple horizontal movement
     def update args
 
